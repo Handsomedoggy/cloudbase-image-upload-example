@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Cloud-image-upload</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style type="text/css">
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    #upload{
+      margin: auto;
+      height: 100px;
+      width: 100px;
+      border-radius: 50%;
+      border: 4px solid #2970f6;
+      font-size: 100px;
+      text-align: center;
+      color:#2970f6;
+      line-height: 92px;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+    }
+    #upload  input {
+      position: absolute;
+    font-size: 0px;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+    left: 0;
+}
+    #preview{
+      width: 600px;
+      height: 600px;
+      margin: auto;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    #summit{
+      margin: auto;
+      width: 100px;
+      border-radius: 20px;
+      text-align: center;
+      border-width: 2px;
+      border-style: solid;
+      border-color: #2970f6;
+      font-size: 18px;
+      padding: 5px 10px;
+      box-sizing: border-box;
+      color: rgb(255, 255, 255);
+      background-color: #2970f6;
+      cursor: pointer;
+    }
+    </style>
+</head>
+ 
+<body>
+    <div id="upload" ><input id="pic"  type="file" accept="image/png,image/jpg,image/jpeg" name="pic" />
++</div>
+    <div id="summit" onclick="upload()">上传</div>
+    <div id="preview"></div>
+</body>
+<script src="//imgcache.qq.com/qcloud/tcbjs/1.7.1/tcb.js"></script>
+<script>
+const app = tcb.init({
+  env: 'ykc-151533'
+});
+const auth = app.auth({
+  persistence: 'local'
+});
+
+var fileinput = document.getElementById('pic'),
+    preview = document.getElementById('preview');
+fileinput.addEventListener('change',function(){
+  if (!fileinput.value) {
+        console.log('no pic');
+        return;
+    }
+    else{
+      console.log('success')
+    }
+  var file = fileinput.files[0];
+  if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/jpg') {
+        alert('仅支持jpeg和png');
+        fileinput.value = '';
+        preview.style.backgroundImage = 'url(#)';
+        return;
+    }else{
+      var reader = new FileReader();
+      reader.onload = function(e){
+      var data = e.target.result;
+      preview.style.backgroundImage = 'url(' + data + ')';
+  }
+      reader.readAsDataURL(file);
+      console.log(file.name)
+    }
+
+})
+
+function upload(){
+    app
+  .uploadFile({
+    // 云端路径
+    cloudPath: document.getElementById('pic').files[0].name,
+    // 需要上传的文件，File 类型
+    filePath: document.getElementById('pic').files[0]
+  })
+  .then(res => {
+    // 返回文件 ID
+    console.log(res.fileID)
+    console.log('上传成功')
+  })
+}
+
+</script>
+</html>
