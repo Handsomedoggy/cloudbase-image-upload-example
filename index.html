@@ -71,9 +71,23 @@
 const app = tcb.init({
   env: 'ykc-151533'
 });
-const auth = app.auth({
-  persistence: 'local'
-});
+const auth = app.auth();
+
+auth.anonymousAuthProvider() 
+
+.signIn()   //AnonymousAuthProvider.signIn() 匿名登录云开发
+
+.then(() => {
+
+    console.log(app.auth().hasLoginState().loginType) //登录成功
+
+}).catch(err => {
+
+    console.log("登录失败",err) //登录失败
+
+})
+
+
 
 var fileinput = document.getElementById('pic'),
     preview = document.getElementById('preview');
@@ -115,8 +129,25 @@ function upload(){
     // 返回文件 ID
     console.log(res.fileID)
     console.log('上传成功')
+    function getdownload(){
+  app
+  .getTempFileURL({
+    fileList: [res.fileID]
+  })
+  .then(res => {
+    res.fileList.forEach((el) => {
+      if(el.code === 'SUCCESS') {
+        console.log(el.tempFileURL)
+      } else {
+        console.log('无地址')//获取下载链接失败
+      }
+    })
+  });
+}
+getdownload();
   })
 }
+
 
 </script>
 </html>
